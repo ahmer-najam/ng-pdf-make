@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: "Montserrat";
+  src: url(./fonts/Montserrat-SemiBold.ttf) format("truetype");
+  font-weight: 500;
+}
+
+* {
+  margin: 0;
+  font-family: Montserrat, "Helvetica Neue", sans-serif;
+}
