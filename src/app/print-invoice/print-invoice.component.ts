@@ -1,3 +1,5 @@
+import { style } from '@angular/animations';
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -22,7 +24,7 @@ pdfMake.fonts = {
   styleUrls: ['./print-invoice.component.css'],
 })
 export class PrintInvoiceComponent implements OnInit {
-  constructor() {}
+  constructor(private datePipe: DatePipe) {}
   invoice: Invoice = {
     customerName: 'Ahmer Najam',
     address: 'Scheme-33 Karachi',
@@ -43,7 +45,30 @@ export class PrintInvoiceComponent implements OnInit {
 
   generateReport(action) {
     let docDefinition = {
-      header: 'Argonic Shoes',
+      footer: function (currentPage, pageCount) {
+        return {
+          text: currentPage.toString() + ' of ' + pageCount.toString(),
+          style: 'footer',
+        };
+      },
+      header: function (currentPage, pageCount, pageSize) {
+        // you can apply any logic and return any valid pdfmake element
+
+        return [
+          {
+            text: 'INVOICE',
+            alignment: 'center',
+            margin: [0, 20],
+            //alignment: currentPage % 2 ? 'left' : 'right',
+          },
+          {
+            canvas: [
+              { type: 'rect', x: 170, y: 32, w: pageSize.width - 170, h: 40 },
+            ],
+          },
+        ];
+      },
+
       content: [
         {
           text: 'SHOE SHOP',
@@ -63,7 +88,10 @@ export class PrintInvoiceComponent implements OnInit {
             ],
             [
               {
-                text: `Date: ${new Date().toLocaleString()}`,
+                text: `Date: ${this.datePipe.transform(
+                  Date.now(),
+                  'dd-MMM-yyyy'
+                )}`,
                 style: 'customerContact',
               },
               {
@@ -72,6 +100,39 @@ export class PrintInvoiceComponent implements OnInit {
               },
             ],
           ],
+        },
+        {
+          text: '\r\r\r',
+        },
+        {
+          layout: 'lightHorizontalLines',
+          style: 'tableStyle',
+          table: {
+            headerRows: 1,
+            widths: ['*', 'auto', 'auto', 'auto'],
+            body: [
+              [
+                { text: 'Product', style: 'tableHeader' },
+                { text: 'Price', style: 'tableHeader' },
+                { text: 'Quantity', style: 'tableHeader' },
+                { text: 'Amount', style: 'tableHeader' },
+              ],
+              ...this.invoice.products.map((p) => [
+                p.name,
+                p.price,
+                p.qty,
+                (p.price * p.qty).toFixed(2),
+              ]),
+              [
+                { text: 'Total Amount', colSpan: 3 },
+                {},
+                {},
+                this.invoice.products
+                  .reduce((sum, p) => sum + p.qty * p.price, 0)
+                  .toFixed(2),
+              ],
+            ],
+          },
         },
       ],
       styles: {
@@ -88,6 +149,16 @@ export class PrintInvoiceComponent implements OnInit {
         },
         customerContact: {
           alignment: 'right',
+        },
+        tableStyle: {
+          margin: [0, 25],
+        },
+        tableHeader: {
+          bold: true,
+          fillColor: '#EcEcEc',
+        },
+        footer: {
+          alignment: 'center',
         },
       },
     };
