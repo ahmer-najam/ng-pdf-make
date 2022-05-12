@@ -4,9 +4,10 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { PrintInvoiceComponent } from './print-invoice/print-invoice.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, PrintInvoiceComponent],
   imports: [BrowserModule, AppRoutingModule],
   providers: [CurrencyPipe, DatePipe],
   bootstrap: [AppComponent],

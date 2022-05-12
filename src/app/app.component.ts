@@ -109,7 +109,18 @@ export class AppComponent {
       margin: '5px',
       header: {
         columns: [
-          { text: 'Report Header', alignment: 'center', margin: [0, 15, 0, 0] },
+          {
+            text: 'Report Header',
+            alignment: 'right',
+            margin: [0, 15, 0, 0],
+            style: ['headerStyle'],
+          },
+          {
+            text: 'Report Subtitle',
+            alignment: 'left',
+            margin: [0, 15, 0, 0],
+            style: ['headerStyle'],
+          },
         ],
       },
       footer: {
