@@ -3,6 +3,8 @@ import { DatePipe, CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { Pdf } from '../shared/pdf.model';
+import { PdfService } from '../shared/pdf.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 pdfMake.fonts = {
@@ -24,11 +26,17 @@ pdfMake.fonts = {
   styleUrls: ['./print-invoice.component.css'],
 })
 export class PrintInvoiceComponent implements OnInit {
-  money: string = '';
-  constructor(private datePipe: DatePipe, public currencyPipe: CurrencyPipe) {
-    this.money = this.invoice.products
-      .reduce((sum, p) => sum + p.qty * p.price, 0)
-      .toFixed(2);
+  money: any = '';
+  newArr: Pdf[] = [];
+  constructor(
+    private datePipe: DatePipe,
+    public currencyPipe: CurrencyPipe,
+    public services: PdfService
+  ) {
+    this.money = this.invoice.products.reduce(
+      (sum, p) => sum + p.qty * p.price,
+      0
+    );
   }
   invoice: Invoice = {
     customerName: 'Ahmer Najam',
@@ -42,10 +50,23 @@ export class PrintInvoiceComponent implements OnInit {
       { name: 'Puma', price: 17.25, qty: 2 },
     ],
   };
-  ngOnInit(): void {}
-
+  ngOnInit(): void {
+    console.log(this.getData());
+  }
+  getData() {
+    this.services.getAlldata().subscribe(
+      (res) => {
+        this.newArr = res as Pdf[];
+        alert('Data is coming');
+      },
+      (err) => {
+        console.log('Error');
+      }
+    );
+  }
   runReport() {
     this.generateReport('open');
+
     // onclick download
   }
 
@@ -133,6 +154,7 @@ export class PrintInvoiceComponent implements OnInit {
                 p.qty,
                 (p.price * p.qty).toFixed(2),
               ]),
+
               [
                 { text: ' Total Amount ', colSpan: 2 },
                 {},
@@ -189,13 +211,11 @@ class Product {
   price: number;
   qty: number;
 }
-
 class Invoice {
   customerName: string;
   address: string;
   contactNo: string;
   email: string;
-
   products: Product[] = [];
   additionalDetails: string;
 }
