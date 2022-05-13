@@ -1,5 +1,5 @@
 import { style } from '@angular/animations';
-import { DatePipe } from '@angular/common';
+import { DatePipe, CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -24,7 +24,12 @@ pdfMake.fonts = {
   styleUrls: ['./print-invoice.component.css'],
 })
 export class PrintInvoiceComponent implements OnInit {
-  constructor(private datePipe: DatePipe) {}
+  money: string = '';
+  constructor(private datePipe: DatePipe, public currencyPipe: CurrencyPipe) {
+    this.money = this.invoice.products
+      .reduce((sum, p) => sum + p.qty * p.price, 0)
+      .toFixed(2);
+  }
   invoice: Invoice = {
     customerName: 'Ahmer Najam',
     address: 'Scheme-33 Karachi',
@@ -41,11 +46,16 @@ export class PrintInvoiceComponent implements OnInit {
 
   runReport() {
     this.generateReport('open');
+    // onclick download
   }
 
   generateReport(action) {
+    // Create Method
     let docDefinition = {
+      // Define footer Page etc : 1 of 1 , 1 of 2
+
       footer: function (currentPage, pageCount) {
+        // every object will be  return parameter {Compulsory}
         return {
           text: currentPage.toString() + ' of ' + pageCount.toString(),
           style: 'footer',
@@ -124,12 +134,12 @@ export class PrintInvoiceComponent implements OnInit {
                 (p.price * p.qty).toFixed(2),
               ]),
               [
-                { text: 'Total Amount', colSpan: 3 },
+                { text: ' Total Amount ', colSpan: 2 },
                 {},
                 {},
-                this.invoice.products
-                  .reduce((sum, p) => sum + p.qty * p.price, 0)
-                  .toFixed(2),
+                {
+                  text: `${this.currencyPipe.transform(this.money)}`,
+                },
               ],
             ],
           },
