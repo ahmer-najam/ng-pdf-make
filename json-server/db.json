@@ -1,0 +1,32 @@
+{
+  "Product": [
+    {
+      "id": 1,
+      "Product": "Nike",
+      "Price": "$145",
+      "Quantity": "12",
+      "Amount": "35.50"
+    },
+    {
+      "id": 2,
+      "Product": "Puma",
+      "Price": "$142",
+      "Quantity": "18",
+      "Amount": "25.50"
+    },
+    {
+      "id": 3,
+      "Product": "Puma",
+      "Price": "$142",
+      "Quantity": "18",
+      "Amount": "25.50"
+    },
+    {
+      "id": 4,
+      "Product": "Outlet",
+      "Price": "$942",
+      "Quantity": "12",
+      "Amount": "20.50"
+    }
+  ]
+}
