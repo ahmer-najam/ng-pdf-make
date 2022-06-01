@@ -1,11 +1,13 @@
 import { style } from '@angular/animations';
-import { DatePipe, CurrencyPipe } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
+
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { Pdf } from '../shared/pdf.model';
+import { Product } from '../shared/product.model';
 import { PdfService } from '../shared/pdf.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import * as _ from 'lodash';
 
 pdfMake.fonts = {
   Roboto: {
@@ -27,16 +29,12 @@ pdfMake.fonts = {
 })
 export class PrintInvoiceComponent implements OnInit {
   money: any = '';
-  newArr: Pdf[] = [];
-  constructor(
-    private datePipe: DatePipe,
-    public currencyPipe: CurrencyPipe,
-    public services: PdfService
-  ) {
-    this.money = this.invoice.products.reduce(
-      (sum, p) => sum + p.qty * p.price,
-      0
-    );
+  newArr: Product[] = [];
+  constructor(public services: PdfService) {
+    // this.money = this.invoice.products.reduce(
+    //   (sum, p) => sum + p.qty * p.price,
+    //   0
+    // );
   }
   invoice: Invoice = {
     customerName: 'Ahmer Najam',
@@ -44,23 +42,23 @@ export class PrintInvoiceComponent implements OnInit {
     contactNo: '03040008757',
     email: 'ahmer.najam@gmail.com',
     additionalDetails: 'Payment would be done in USD',
-    products: [
-      { name: 'Nike', price: 15.25, qty: 3 },
-      { name: 'Rebok', price: 20.25, qty: 5 },
-      { name: 'Puma', price: 17.25, qty: 2 },
-    ],
+    products: ([] = this.newArr),
   };
   ngOnInit(): void {
-    console.log(this.getData());
+    this.getData();
+    console.log(this.newArr);
   }
   getData() {
+    this.services.getAlldata().subscribe((list) => {
+      this.newArr = _.cloneDeep(list);
+    });
     this.services.getAlldata().subscribe(
       (res) => {
-        this.newArr = res as Pdf[];
-        alert('Data is coming');
+        this.newArr = res;
+        console.log('AA gaya ');
       },
       (err) => {
-        console.log('Error');
+        console.log('data nh aaya');
       }
     );
   }
@@ -119,11 +117,11 @@ export class PrintInvoiceComponent implements OnInit {
             ],
             [
               {
-                text: `Date: ${this.datePipe.transform(
-                  Date.now(),
-                  'dd-MMM-yyyy'
-                )}`,
-                style: 'customerContact',
+                // text: `Date: ${this.datePipe.transform(
+                //   Date.now(),
+                //   'dd-MMM-yyyy'
+                // )}`,
+                // style: 'customerContact',
               },
               {
                 text: `Bill No : ${(Math.random() * 1000).toFixed(0)}`,
@@ -160,7 +158,7 @@ export class PrintInvoiceComponent implements OnInit {
                 {},
                 {},
                 {
-                  text: `${this.currencyPipe.transform(this.money)}`,
+                  //   text: `${this.currencyPipe.transform(this.money)}`,
                 },
               ],
             ],
@@ -206,11 +204,6 @@ export class PrintInvoiceComponent implements OnInit {
   }
 }
 
-class Product {
-  name: string;
-  price: number;
-  qty: number;
-}
 class Invoice {
   customerName: string;
   address: string;
