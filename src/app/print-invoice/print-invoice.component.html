@@ -1,3 +1,9 @@
 <button (click)="runReport()">Generate PDF</button>
 
 <p>{{ money | currency: "JPY":"symbol" }}</p>
+
+<div class="para" *ngFor="let item of newArr">
+  <p>{{ item.name }}</p>
+  <p>{{ item.qty }}</p>
+  <p>{{ item.price }}</p>
+</div>
