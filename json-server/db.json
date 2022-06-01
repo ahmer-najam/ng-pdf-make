@@ -2,31 +2,27 @@
   "posts": [
     {
       "id": 1,
-      "Product": "Nike",
-      "Price": "$145",
-      "Quantity": "12",
-      "Amount": "35.50"
+      "name": "Nike",
+      "price": "$145",
+      "qty": "12"
     },
     {
       "id": 2,
-      "Product": "Puma",
-      "Price": "$142",
-      "Quantity": "18",
-      "Amount": "25.50"
+      "name": "Puma",
+      "price": "$142",
+      "qty": "18"
     },
     {
       "id": 3,
-      "Product": "Puma",
-      "Price": "$142",
-      "Quantity": "18",
-      "Amount": "25.50"
+      "name": "Puma",
+      "price": "$142",
+      "qty": "18"
     },
     {
       "id": 4,
-      "Product": "Outlet",
-      "Price": "$942",
-      "Quantity": "12",
-      "Amount": "20.50"
+      "name": "Outlet",
+      "price": "$942",
+      "qty": "12"
     }
   ]
 }
